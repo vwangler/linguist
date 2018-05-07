@@ -44,7 +44,12 @@ if File.directory?(path)
       puts
     end
   elsif json_breakdown
-    puts JSON.dump(repo.breakdown_by_file)
+    file_breakdown = repo.breakdown_by_file
+    puts "{"
+    repo.languages.sort_by { |_, size| size }.reverse.each do |language, size|
+      puts "\"%s\":%s," % [language, JSON.dump(file_breakdown[language])]
+    end
+    puts "}"
   end
 elsif File.file?(path)
   blob = Linguist::FileBlob.new(path, Dir.pwd)
